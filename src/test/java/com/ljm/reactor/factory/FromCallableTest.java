@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
 import static org.junit.Assert.*;
@@ -45,9 +47,32 @@ public class FromCallableTest {
     }
 
     protected Mono<String> getFromNetwork(boolean bflag){
+
+        //region how to use fromCallable
+        /***
+         * https://projectreactor.io/docs/core/release/reference/#faq
+         * https://www.woolha.com/tutorials/project-reactor-processing-flux-in-parallel
+         *
+         *
+         * B.1. How do I wrap a synchronous, blocking call?
+
+         It is often the case that a source of information is synchronous and blocking. To deal with such sources in your Reactor applications, apply the following pattern:
+
+         Mono blockingWrapper = Mono.fromCallable(() -> {
+         return
+         });
+         blockingWrapper = blockingWrapper.subscribeOn(Schedulers.boundedElastic());
+
+         Create a new Mono by using fromCallable.
+         Return the asynchronous, blocking resource.
+         Ensure each subscription happens on a dedicated single-threaded worker from Schedulers.boundedElastic()
+         */
+        //endregion
+
         Mono<String> monoResult = Mono.fromCallable( () -> {
             return ipsGetString(bflag);
         } );
+        monoResult = monoResult.subscribeOn(Schedulers.elastic());
         return monoResult;
     }
 
