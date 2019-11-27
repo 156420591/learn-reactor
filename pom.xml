@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
 
     <name>learn Reactor</name>
-    <description>learn Reactor Project</description>
+    <description>learn Reactor Project https://tech.io/playgrounds/929/reactive-programming-with-reactor-3/transform </description>
     <url>https://github.com/pkpk1234/learn-reactor.git</url>
 
     <properties>
