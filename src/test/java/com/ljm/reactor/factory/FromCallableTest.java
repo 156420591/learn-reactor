@@ -61,11 +61,28 @@ public class FromCallableTest {
          Mono blockingWrapper = Mono.fromCallable(() -> {
          return
          });
-         blockingWrapper = blockingWrapper.subscribeOn(Schedulers.boundedElastic());
+         blockingWrapper = blockingWrapper.subscribeOn(Schedulers.single());
 
          Create a new Mono by using fromCallable.
          Return the asynchronous, blocking resource.
-         Ensure each subscription happens on a dedicated single-threaded worker from Schedulers.boundedElastic()
+         Ensure each subscription happens on a dedicated single-threaded worker from Schedulers.single()
+         *
+         *
+         * threads managing  https://jvmfy.com/2019/04/06/project-reactor-first-steps/
+         * Threads managing
+
+         Project Reactor allows managing threads by schedulers. As you can guess, Schedulers provide some static methods to create new instances.
+         Schedulers.elastic();
+         Schedulers.immediate();
+         Schedulers.parallel();
+         Schedulers.single();
+
+         You can use any of them, just call publishOn or subscribeOn on publisher or subscriber respectively. In this simple way, you can manage threads during publishing and subscribing.
+         The default strategy is Schedulers.imediate() which try to use the current thread. That¡¯s mean, if you crate publisher on the main thread, the main thread will be used to emit data. The single() method will use one thread, but not necessarily the same, which create publisher od subscriber, the thread will be probably called single-1.
+         An elastic thread pool. It creates new worker pools as needed, and reuse idle ones. Worker pools that stay idle for too long (default is 60s) are disposed. This is a good choice for I/O blocking work for instance.
+         The parallel approach creates as many workers as you have CPU cores.
+         Of course, you can still create your own Schedulers by calling one of the Schedulers.newXXX() methods. There you can set up numbers of threads, names, etc..
+         *
          */
         //endregion
 
