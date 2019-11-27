@@ -84,7 +84,7 @@ public class FromCallableTest {
 
     @Test
     public void testFail() throws Exception {
-        Mono<String> ipsResult = getFromNetwork(true);
+        Mono<String> ipsResult = getFromNetwork(false);
         Mono<String> finalResp = respAccordingMonoIps(ipsResult);
         StepVerifier.create(finalResp)
                 .expectNext("myRespond")
