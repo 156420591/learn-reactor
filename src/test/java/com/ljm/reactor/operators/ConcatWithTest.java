@@ -58,7 +58,7 @@ public class ConcatWithTest {
 
 
     protected Mono<String> longWorkDinning(String dish){
-        Mono<String> str1 = Mono.<String>fromCallable(() -> {
+        Mono<String> str1 = Mono.fromCallable(() -> {
             System.out.println("I'm having dinner");
             myslepp(20);
             if("fish".equalsIgnoreCase(dish)){
@@ -85,11 +85,39 @@ public class ConcatWithTest {
                 .verify();
     }
     @Test
-    public void test_washThenDinning_exceptino() throws Exception {
+    public void test_washThenDinning_exception() throws Exception {
         Flux<String> sut = dinnerThenWash("black", "fish");
         StepVerifier.create(sut)
                 .expectErrorMessage("fish")
                 .verify();
+    }
+
+    protected void longTimeWorking(){
+    }
+
+    protected Mono<Integer> generateInt(){
+        Mono<Integer> result = Mono.fromCallable( () -> {
+            System.out.println("generateInt");
+            longTimeWorking();
+            return 1;
+        } );
+        return result;
+    }
+    protected Mono<String> generateString(){
+        Mono<String> result = Mono.fromCallable( () -> {
+            System.out.println("generateString");
+            longTimeWorking();
+            return "hello";
+        } );
+        return result;
+    }
+
+    @Test
+    public void testConcatDifferentTypes() throws Exception {
+        Mono<Integer> myint = generateInt();
+        Mono<String> mystr = generateString();
+        Flux.concat(myint, mystr).blockLast();
+        Flux.concat(mystr, myint).subscribe();
     }
 
 
