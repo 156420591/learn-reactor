@@ -54,8 +54,24 @@ public class DoOnErrorTest {
     }
 
     @Test
+    public void test_callMeByYourName1_defer() throws Exception {
+        Mono<Void> result = Mono.defer(()-> callMeByYourName("others") );
+        StepVerifier.create(result)
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
     public void test_callMeByYourName_expectException1() throws Exception {
         Mono<Void> result = callMeByYourName("Oliver");
+        StepVerifier.create(result)
+                .expectError(InvalidAlgorithmParameterException.class)
+                .verify();
+    }
+
+    @Test
+    public void test_callMeByYourName_expectException1_defer() throws Exception {
+        Mono<Void> result = Mono.defer( ()-> callMeByYourName("Oliver") );
         StepVerifier.create(result)
                 .expectError(InvalidAlgorithmParameterException.class)
                 .verify();
