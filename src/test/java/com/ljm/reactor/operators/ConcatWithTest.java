@@ -136,4 +136,25 @@ public class ConcatWithTest {
                 .expectComplete()
                 .verify();
     }
+
+    public static class monoRevert{
+        protected Mono<Boolean> isEven(int num){
+            if(num % 2 == 0){
+                return Mono.just(true);
+            }
+            return Mono.just(false);
+        }
+        protected Mono<Boolean> isOddUsingIsEven(int num){
+            return isEven(num).map(bIsEven -> !bIsEven);
+        }
+
+        @Test
+        public void testIsOdd() throws Exception{
+            Mono<Boolean> sut = isOddUsingIsEven(3);
+            StepVerifier.create(sut)
+                    .expectNext(true)
+                    .expectComplete()
+                    .verify();
+        }
+    }
 }
