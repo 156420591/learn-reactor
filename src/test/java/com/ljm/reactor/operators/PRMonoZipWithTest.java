@@ -38,6 +38,22 @@ public class PRMonoZipWithTest {
             return Mono.empty();
         }
 
+        protected Mono<Boolean> canIRegister(){
+            return Mono.fromCallable(() -> true);
+        }
+
+        protected Mono<Void> convertMonoBooleanToVoid(){
+            return canIRegister().then();
+        }
+
+        @Test
+        public void testConvertMonoBooleanToVoid() throws Exception {
+            Mono<Void> sut = convertMonoBooleanToVoid();
+            StepVerifier.create(sut)
+                    .expectComplete()
+                    .verify();
+        }
+
         protected Mono<String> doLongWork(){
             return Mono.fromCallable(() -> {return "test"; });
         }
