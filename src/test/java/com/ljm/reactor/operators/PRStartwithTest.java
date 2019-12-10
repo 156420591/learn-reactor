@@ -4,7 +4,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * ¨€¨€¨[  ¨€¨€¨[¨€¨€¨[    ¨€¨€¨[ ¨€¨€¨€¨€¨€¨€¨[
@@ -47,6 +50,36 @@ public class PRStartwithTest {
                     .expectNext("barron")
                     .expectComplete()
                     .verify();
+        }
+
+        @Test
+        public void test_wired() throws Exception {
+            Mono.just("DATA")
+                    .flatMap(s -> Mono.just(s.concat("-")
+                            .concat(s))
+                            .doOnNext(System.out::println)
+                            .then())
+                    .switchIfEmpty(Mono.just("EMPTY")
+                            .doOnNext(System.out::println)
+                            .then())
+                    .block();
+        }
+
+        @Test
+        public void test_wired1() throws Exception {
+            String test = "test";
+            String other = test.concat("-").concat("test");
+            assertEquals("test", test);
+            assertEquals("test-test", other);
+
+            Mono<String> sut = Mono.just("DATA")
+                    .flatMap(s -> Mono.just(s.concat("-").concat(s)) )
+                    .switchIfEmpty(Mono.just("EMPTY"));
+
+            StepVerifier.create(sut)
+                    .expectNext("DATA-DATA")
+            .expectComplete()
+            .verify();
         }
     }
 
