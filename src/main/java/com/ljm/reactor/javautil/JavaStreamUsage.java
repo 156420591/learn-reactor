@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
  * Created by huwenguang on 2019/12/12.
  */
 public class JavaStreamUsage {
+    // https://dzone.com/articles/10-tips-to-handle-null-effectively
+    
     public static int getMaxLength(List<String> words){
         int maxlen = words
                 .stream()
