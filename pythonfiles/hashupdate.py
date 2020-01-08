@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: gbk -*-
 
-#yum install MySQL-python.x86_64
-
 import pymysql
 import hashlib
 import codecs
@@ -42,7 +40,7 @@ def main():
         ip               = row[6]
         port             = row[7]
         
-        str2hash = mccode_fwd + "," + transtype
+        str2hash  = "/" + uri_tag + uri
         strmyhash = doProxyHash(str2hash)
         strupdate = "update " + tablename2do + " set uri_hash='" + strmyhash + "' where mccode_fwd='" + mccode_fwd + "' and transtype='" + transtype + "'"
         cmdsupdate.append(strupdate)
@@ -50,6 +48,7 @@ def main():
     for strupdate in cmdsupdate:
         cur.execute(strupdate)
         db.commit()
+    db.close()
     
 if __name__== "__main__":
     main()

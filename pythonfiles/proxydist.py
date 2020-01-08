@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: gbk -*-
 
-#yum install MySQL-python.x86_64
 
 import pymysql
 import hashlib
@@ -13,8 +12,8 @@ db_password     = ""
 db_databasename = "test"
 tablename2do    = "proxydist"
 
-filename_proxy  = "conf_hash.ini"
-filename_ipport = "conf_ipport.ini"
+filename_proxy  = "hash.ini"
+filename_ipport = "addr.ini"
 
 def doProxyHash(strmsg):
     sha_1 = hashlib.sha1()
@@ -54,6 +53,7 @@ def main():
         uri_hash         = row[5]
         ip               = row[6]
         port             = row[7]
+        tcpluascript     = row[8]
         
         str2hash = mccode_fwd + "," + transtype
         #strmyhash = doProxyHash(str2hash)
@@ -69,7 +69,9 @@ def main():
         newsection = newsection + "[" + uri_tag + "]\r\n"
         newsection = newsection + "ip   = " + ip + "\r\n"
         newsection = newsection + "port = " + port + "\r\n"
+        newsection = newsection + "func = " + tcpluascript + "\r\n\r\n"
         strother   = strother + newsection
+    db.close()
     writeProxyfile(filename_proxy, str2write)
     writeProxyfile(filename_ipport, strother)
     
